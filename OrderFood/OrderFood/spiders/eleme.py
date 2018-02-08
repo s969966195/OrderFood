@@ -24,15 +24,18 @@ class ElemeSpider(scrapy.Spider):
         driver.get(self.start_urls[0])
 
         element = WebDriverWait(driver, 10).until(lambda driver: driver.find_element_by_xpath('//div[@class="place-rstbox clearfix"]'))
-        execute_times(driver, 1)
+        execute_times(driver, -1)
 
         item = ElemeItem()
         item['name'] = driver.find_elements_by_xpath('//*[@class="rstblock-title"]')
-        # item['url'] = driver.find_elements_by_xpath('//*[@class="rstblock"]/@href')
+        item['url'] = []
+        aurl = driver.find_elements_by_xpath('//a[@class="rstblock"]')
+        for url in aurl:
+            item['url'].append(url.get_attribute("href"))
         item['dfee'] = driver.find_elements_by_xpath('//*[@class="rstblock-cost"]')
         item['dtime'] = driver.find_elements_by_xpath('//*[@class="rstblock-logo"]/span')
 
-        for i in item['name']:
-            print i.text
+        for i in item['url']:
+            print i
 
         driver.close()
