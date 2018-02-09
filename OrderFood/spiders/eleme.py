@@ -26,6 +26,12 @@ class ElemeSpider(scrapy.Spider):
         element = WebDriverWait(driver, 10).until(lambda driver: driver.find_element_by_xpath('//div[@class="place-rstbox clearfix"]'))
         execute_times(driver, -1)
 
+        aurl = driver.find_elements_by_xpath('//a[@class="rasblock"]')
+        for url in aurl:
+            yield scrapy.Request(url.get_attribute("href"),
+                    callback=self.parse_dir_contents)
+
+    def parse_dir_contents(self, response):
         item = ElemeItem()
         item['name'] = driver.find_elements_by_xpath('//*[@class="rstblock-title"]')
         item['url'] = []
@@ -34,8 +40,12 @@ class ElemeSpider(scrapy.Spider):
             item['url'].append(url.get_attribute("href"))
         item['dfee'] = driver.find_elements_by_xpath('//*[@class="rstblock-cost"]')
         item['dtime'] = driver.find_elements_by_xpath('//*[@class="rstblock-logo"]/span')
+        print type(item['name'])
+        print type(item['url'])
 
         for i in item['url']:
             print i
 
         driver.close()
+
+    
